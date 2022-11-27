@@ -15,7 +15,7 @@ function site_url($path)
     return $site_url . $path;
 }
 
-//for validating signup form
+//untuk validasi form signup
 function validateSignup($data)
 {
     $full_name = $data["full_name"] ?? "";
@@ -52,7 +52,7 @@ function validateSignup($data)
     }
 
 
-// check if user is already registered
+// melakukan check apakah user sudah ter-registrasi
 
 if (checkDuplicateEmail($email)) {
     $return_data["status"] = false;
@@ -71,7 +71,7 @@ if (checkDuplicateMobile($mobile)) {
     return $return_data;
 }
 
-//for showing error messages
+//untuk menampilkan pesan error
 function showError($field)
 {
     if (isset($_SESSION["error"]) && $_SESSION["error"]["field"] == $field) {
@@ -82,7 +82,7 @@ function showError($field)
     }
 }
 
-//for showing previous submited form values
+//untuk menampilkan form value
 function showFormValue($field)
 {
     if (isset($_SESSION["form_data"])) {
@@ -91,7 +91,7 @@ function showFormValue($field)
     return "";
 }
 
-//for checking email id is already registered or not
+//untuk check email id sudah ter-registrasi atau belum
 function checkDuplicateEmail($email){
 global $db;
 $query="SELECT COUNT(*) as row FROM users WHERE email='$email'";
@@ -110,7 +110,7 @@ function checkDuplicateMobile($mobile){
 }
 
 
-//for creating new user
+// membuat user baru
 function createUser($data){
     global $db;
     $full_name =mysqli_real_escape_string($db,$data["full_name"]);
@@ -133,7 +133,7 @@ function createUser($data){
 
 }
 
-// for checking user is exist or not
+// check user ada atau tidak
 function checkUser($mobile_or_email,$password){
     global $db;
     $query="SELECT * FROM users WHERE (mobile='$mobile_or_email' || email='$mobile_or_email') && password=$password";
@@ -141,62 +141,4 @@ function checkUser($mobile_or_email,$password){
     $run = mysqli_query($db,$query);
     $return_data = mysqli_fetch_assoc($run) ?? array();
     return $return_data;
-}
-
-//for adding 1000 rs for new users
-function addJoiningBalance($user_id){
-    global $db;
-    $query="INSERT INTO trans(from_user_id,to_user_id,amount) VALUES(121,$user_id,1000)";
-    return mysqli_query($db,$query);
-}
-
-//for knowing the credited balance of user
-function getCreditedBalance($user_id){
-    global $db;
-    $query="SELECT SUM(amount) as credit FROM trans WHERE to_user_id=$user_id";
-    $run = mysqli_query($db,$query);
-    $return_data = mysqli_fetch_assoc($run);
-    return $return_data['credit'];
-}
-
-//for knowing the debited balance of user
-function getDebitedBalance($user_id){
-    global $db;
-    $query="SELECT SUM(amount) as debit FROM trans WHERE from_user_id=$user_id";
-    $run = mysqli_query($db,$query);
-    $return_data = mysqli_fetch_assoc($run);
-    return $return_data['debit'];
-}
-
-
-//for getting transection history of user
-function getTransHistory($user_id){
-    global $db;
-    $query="SELECT * FROM trans WHERE from_user_id=$user_id || to_user_id=$user_id ORDER BY ID DESC";
-    $run = mysqli_query($db,$query);
-    return mysqli_fetch_all($run,true);
-}
-
-
-//for geting user information by id
-function getUserById($user_id){
-    global $db;
-    $query="SELECT full_name,email,mobile FROM users WHERE id=$user_id";
-    $run = mysqli_query($db,$query);
-    return mysqli_fetch_assoc($run); 
-}
-
-//for geting user_id by mobile o
-function getUserIdByMobileNo($mobile_no){
-    global $db;
-    $query="SELECT id FROM users WHERE mobile='$mobile_no'";
-    $run = mysqli_query($db,$query);
-    return mysqli_fetch_assoc($run)['id']; 
-}
-
-//for sending the money
-function sendMoney($to_user_id,$from_user_id,$amount){
-    global $db;
-    $query="INSERT INTO trans(from_user_id,to_user_id,amount) VALUES($from_user_id,$to_user_id,$amount)";
-    return mysqli_query($db,$query);
 }
