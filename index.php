@@ -24,5 +24,6 @@ if (isset($_SESSION['form_data'])) {
     unset($_SESSION['form_data']);
 }
 
+//TES Join
 // memasukkan footer
 viewPage('footer');
